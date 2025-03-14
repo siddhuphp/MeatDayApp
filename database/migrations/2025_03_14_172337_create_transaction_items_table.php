@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaction_items', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('transaction_id');
+            $table->uuid('product_id');
+            $table->decimal('quantity', 8, 3); // Supports fractional kg (e.g., 0.500 for 500g)
+            $table->decimal('price', 10, 2);
             $table->timestamps();
+        
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

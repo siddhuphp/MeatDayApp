@@ -4,22 +4,68 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\RewardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-# Public routes
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes (No Authentication Required)
+|--------------------------------------------------------------------------
+*/
+
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 
 Route::post('admin/register', [AdminAuthController::class, 'registerAdmin']); // One-time use
 Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
 
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (Require Authentication)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    // 🛒 Customer Purchase & Billing
+    Route::post('create-bill', [TransactionController::class, 'createBill']);
+    Route::get('transactions/{customer_id}', [TransactionController::class, 'getCustomerTransactions']);
+
+    // 🎁 Reward Points System
+    Route::get('reward-points/{customer_id}', [RewardController::class, 'getPoints']);
+    Route::post('redeem-points', [RewardController::class, 'redeemPoints']);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes (Require Authentication & Admin Access)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth:sanctum', 'admin')->group(function () {
-    Route::post('admin/category', [AdminController::class, 'addCategory']);
-    Route::post('admin/subcategory', [AdminController::class, 'addSubcategory']);
-    Route::post('admin/product', [AdminController::class, 'addProduct']);
+
+   // 🛍️ Manage Categories
+   Route::post('admin/category', [CategoryController::class, 'addCategory']);
+   Route::get('admin/categories', [CategoryController::class, 'getCategories']);
+
+   // 🏷️ Manage Subcategories
+   Route::post('admin/subcategory', [SubcategoryController::class, 'addSubcategory']);
+   Route::get('admin/subcategories/{category_id}', [SubcategoryController::class, 'getSubcategories']);
+
+   // 📦 Manage Products
+   Route::post('admin/product', [ProductController::class, 'addProduct']);
+   Route::get('admin/products/{subcategory_id}', [ProductController::class, 'getProducts']);
+
+    // 📋 View All Transactions
+    Route::get('admin/transactions', [TransactionController::class, 'getAllTransactions']);
 });
 
 
