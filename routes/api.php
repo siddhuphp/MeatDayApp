@@ -27,6 +27,10 @@ Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('admin/register', [AdminAuthController::class, 'registerAdmin']); // One-time use
 Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
 
+Route::get('categories', [CategoryController::class, 'getCategories']);
+Route::get('subcategories', [SubcategoryController::class, 'getAllSubcategories']);
+Route::get('subcategories/{category_id}', [SubcategoryController::class, 'getSubcategories']);
+
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Require Authentication)
@@ -41,7 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // 🎁 Reward Points System
     Route::get('reward-points/{customer_id}', [RewardController::class, 'getPoints']);
     Route::post('redeem-points', [RewardController::class, 'redeemPoints']);
-
 });
 
 /*
@@ -52,17 +55,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware('auth:sanctum', 'admin')->group(function () {
 
-   // 🛍️ Manage Categories
-   Route::post('admin/category', [CategoryController::class, 'addCategory']);
-   Route::get('admin/categories', [CategoryController::class, 'getCategories']);
+    // 🛍️ Manage Categories
+    Route::post('category', [CategoryController::class, 'addCategory']);
 
-   // 🏷️ Manage Subcategories
-   Route::post('admin/subcategory', [SubcategoryController::class, 'addSubcategory']);
-   Route::get('admin/subcategories/{category_id}', [SubcategoryController::class, 'getSubcategories']);
+    // 🏷️ Manage Subcategories
+    Route::post('subcategory', [SubcategoryController::class, 'addSubcategory']);
 
-   // 📦 Manage Products
-   Route::post('admin/product', [ProductController::class, 'addProduct']);
-   Route::get('admin/products/{subcategory_id}', [ProductController::class, 'getProducts']);
+    // 📦 Manage Products
+    Route::post('admin/product', [ProductController::class, 'addProduct']);
+    Route::get('admin/products/{subcategory_id}', [ProductController::class, 'getProducts']);
 
     // 📋 View All Transactions
     Route::get('admin/transactions', [TransactionController::class, 'getAllTransactions']);
@@ -91,5 +92,4 @@ Route::get('/config-cache', function () {
 Route::get('/view-clear', function () {
     Artisan::call('view:clear');
     return 'View cache has been cleared';
-}); 
-
+});

@@ -16,11 +16,12 @@ return new class extends Migration
             $table->uuid('subcategory_id');
             $table->string('name');
             $table->decimal('price_per_kg', 10, 2);
+            $table->decimal('regular_points', 10, 2)->comment('Regular Reward Points')->default(0);
+            $table->decimal('pre_order_points', 10, 2)->comment('Pre-Order Reward Points')->default(0);
             $table->timestamps();
-        
+
             $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');
         });
-        
     }
 
     /**

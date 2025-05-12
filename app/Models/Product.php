@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ class Product extends Model
 
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $fillable = ['id', 'subcategory_id', 'name', 'price_per_kg'];
+    protected $fillable = ['id', 'subcategory_id', 'name', 'price_per_kg', 'regular_points', 'pre_order_points'];
 
     protected static function boot()
     {
