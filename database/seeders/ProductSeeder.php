@@ -37,6 +37,8 @@ class ProductSeeder extends Seeder
                     'subcategory_id' => $subcategory->id,
                     'name' => $product['name'],
                     'price_per_kg' => $product['price_per_kg'],
+                    'regular_points' => 100,
+                    'pre_order_points' => 150,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
