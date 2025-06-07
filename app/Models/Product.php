@@ -12,7 +12,16 @@ class Product extends Model
 
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $fillable = ['id', 'subcategory_id', 'name', 'price_per_kg', 'regular_points', 'pre_order_points'];
+    protected $fillable = [
+        'id',
+        'subcategory_id',
+        'name',
+        'price_per_kg',
+        'regular_points',
+        'pre_order_points',
+        'product_discount',
+        'product_image'
+    ];
 
     protected static function boot()
     {

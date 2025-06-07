@@ -18,6 +18,8 @@ return new class extends Migration
             $table->decimal('price_per_kg', 10, 2);
             $table->decimal('regular_points', 10, 2)->comment('Regular Reward Points')->default(0);
             $table->decimal('pre_order_points', 10, 2)->comment('Pre-Order Reward Points')->default(0);
+            $table->decimal('product_discount', 5, 2)->default(0);
+            $table->string('product_image')->nullable();
             $table->timestamps();
 
             $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');
