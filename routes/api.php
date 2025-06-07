@@ -30,6 +30,12 @@ Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::get('subcategories', [SubcategoryController::class, 'getAllSubcategories']);
 Route::get('subcategories/{category_id}', [SubcategoryController::class, 'getSubcategories']);
+Route::get('products/subcategory/{subcategory_id}', [ProductController::class, 'getProductsBySubcategory']);
+
+Route::get('products/{id}', [ProductController::class, 'viewProduct']);
+Route::get('products', [ProductController::class, 'listProducts']);
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -62,11 +68,13 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
     Route::post('subcategory', [SubcategoryController::class, 'addSubcategory']);
 
     // 📦 Manage Products
-    Route::post('admin/product', [ProductController::class, 'addProduct']);
-    Route::get('admin/products/{subcategory_id}', [ProductController::class, 'getProducts']);
+    Route::post('product', [ProductController::class, 'addProduct']);
+    Route::put('products/{id}', [ProductController::class, 'updateProduct']);
+    Route::delete('products/{id}', [ProductController::class, 'deleteProduct']);
+    
 
     // 📋 View All Transactions
-    Route::get('admin/transactions', [TransactionController::class, 'getAllTransactions']);
+    Route::get('transactions', [TransactionController::class, 'getAllTransactions']);
 });
 
 

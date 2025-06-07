@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('subcategory_id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->decimal('price_per_kg', 10, 2);
-            $table->decimal('regular_points', 10, 2)->comment('Regular Reward Points')->default(0);
-            $table->decimal('pre_order_points', 10, 2)->comment('Pre-Order Reward Points')->default(0);
+            $table->decimal('regular_points', 10, 2)->comment('Regular Reward Points')->default(0)->nullable();
+            $table->decimal('pre_order_points', 10, 2)->comment('Pre-Order Reward Points')->default(0)->nullable();
             $table->decimal('product_discount', 5, 2)->default(0);
             $table->string('product_image')->nullable();
             $table->timestamps();
