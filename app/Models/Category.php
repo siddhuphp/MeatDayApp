@@ -11,7 +11,7 @@ class Category extends Model
 
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['id', 'name', 'status'];
 
     protected static function boot()
     {
@@ -21,9 +21,9 @@ class Category extends Model
         });
     }
 
-    // Relationship: A category has many subcategories
-    public function subcategories()
+    // Relationship: A category has many products
+    public function products()
     {
-        return $this->hasMany(Subcategory::class);
+        return $this->hasMany(Product::class);
     }
 }

@@ -15,26 +15,26 @@ class ProductSeeder extends Seeder
     public function run()
     {
         $products = [
-            ['subcategory' => 'Boiler Kodi', 'name' => 'Whole Chicken', 'price_per_kg' => 220],
-            ['subcategory' => 'Natu Kodi', 'name' => 'Country Chicken', 'price_per_kg' => 350],
-            ['subcategory' => 'Eggs', 'name' => 'Farm Fresh Eggs (12)', 'price_per_kg' => 120],
-            ['subcategory' => 'Mutton', 'name' => 'Goat Meat (With Bone)', 'price_per_kg' => 700],
-            ['subcategory' => 'Mutton', 'name' => 'Boneless Mutton', 'price_per_kg' => 850],
-            ['subcategory' => 'Bochu', 'name' => 'Live Bochu Fish', 'price_per_kg' => 400],
-            ['subcategory' => 'Korameena', 'name' => 'Fresh Korameena Fish', 'price_per_kg' => 550],
-            ['subcategory' => 'Vanjram', 'name' => 'Seer Fish (Steaks)', 'price_per_kg' => 950],
-            ['subcategory' => 'Tiger Prawns', 'name' => 'Jumbo Tiger Prawns', 'price_per_kg' => 1200],
-            ['subcategory' => 'Endu Royyalu', 'name' => 'Dry Prawns', 'price_per_kg' => 850],
-            ['subcategory' => 'Chicken Pickle', 'name' => 'Spicy Chicken Pickle', 'price_per_kg' => 500],
-            ['subcategory' => 'Chicken Masala', 'name' => 'Special Chicken Masala', 'price_per_kg' => 200],
+            ['category' => 'Meat & Poultry', 'name' => 'Whole Chicken', 'price_per_kg' => 220],
+            ['category' => 'Meat & Poultry', 'name' => 'Country Chicken', 'price_per_kg' => 350],
+            ['category' => 'Meat & Poultry', 'name' => 'Farm Fresh Eggs (12)', 'price_per_kg' => 120],
+            ['category' => 'Meat & Poultry', 'name' => 'Goat Meat (With Bone)', 'price_per_kg' => 700],
+            ['category' => 'Meat & Poultry', 'name' => 'Boneless Mutton', 'price_per_kg' => 850],
+            ['category' => 'Fresh Water Fish (LIVE & ICED)', 'name' => 'Live Bochu Fish', 'price_per_kg' => 400],
+            ['category' => 'Fresh Water Fish (LIVE & ICED)', 'name' => 'Fresh Korameena Fish', 'price_per_kg' => 550],
+            ['category' => 'Sea Fish', 'name' => 'Seer Fish (Steaks)', 'price_per_kg' => 950],
+            ['category' => 'Sea Fish', 'name' => 'Jumbo Tiger Prawns', 'price_per_kg' => 1200],
+            ['category' => 'Dry Fish', 'name' => 'Dry Prawns', 'price_per_kg' => 850],
+            ['category' => 'Non-Veg Pickles', 'name' => 'Spicy Chicken Pickle', 'price_per_kg' => 500],
+            ['category' => 'Masalas', 'name' => 'Special Chicken Masala', 'price_per_kg' => 200],
         ];
 
         foreach ($products as $product) {
-            $subcategory = DB::table('subcategories')->where('name', $product['subcategory'])->first();
-            if ($subcategory) {
+            $category = DB::table('categories')->where('name', $product['category'])->first();
+            if ($category) {
                 DB::table('products')->insert([
                     'id' => Str::uuid(),
-                    'subcategory_id' => $subcategory->id,
+                    'category_id' => $category->id,
                     'name' => $product['name'],
                     'price_per_kg' => $product['price_per_kg'],
                     'regular_points' => 100,

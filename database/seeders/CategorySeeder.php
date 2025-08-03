@@ -28,6 +28,7 @@ class CategorySeeder extends Seeder
             DB::table('categories')->insert([
                 'id' => Str::uuid(),
                 'name' => $category,
+                'status' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

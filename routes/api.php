@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RewardController;
@@ -34,9 +33,7 @@ Route::post('admin/register', [AdminAuthController::class, 'registerAdmin']); //
 Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
 
 Route::get('categories', [CategoryController::class, 'getCategories']);
-Route::get('subcategories', [SubcategoryController::class, 'getAllSubcategories']);
-Route::get('subcategories/{category_id}', [SubcategoryController::class, 'getSubcategories']);
-Route::get('products/subcategory/{subcategory_id}', [ProductController::class, 'getProductsBySubcategory']);
+Route::get('products/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 
 Route::get('products/{id}', [ProductController::class, 'viewProduct']);
 Route::get('products', [ProductController::class, 'listProducts']);
@@ -69,9 +66,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
 
     // 🛍️ Manage Categories
     Route::post('category', [CategoryController::class, 'addCategory']);
-
-    // 🏷️ Manage Subcategories
-    Route::post('subcategory', [SubcategoryController::class, 'addSubcategory']);
+    Route::put('categories/{id}/status', [CategoryController::class, 'updateCategoryStatus']);
 
     // 📦 Manage Products
     Route::post('product', [ProductController::class, 'addProduct']);

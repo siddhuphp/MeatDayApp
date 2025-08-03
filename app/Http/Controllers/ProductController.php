@@ -14,7 +14,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'subcategory_id' => 'required|exists:subcategories,id',
+            'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
             'pre_order_points' => 'nullable|numeric',
@@ -39,7 +39,7 @@ class ProductController extends Controller
 
         Product::create([
             'id' => Str::uuid(),
-            'subcategory_id' => $request->subcategory_id,
+            'category_id' => $request->category_id,
             'name' => $request->name,
             'price_per_kg' => $request->price_per_kg,
             'regular_points' => $request->regular_points,
@@ -57,7 +57,7 @@ class ProductController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'subcategory_id' => 'required|exists:subcategories,id',
+            'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
             'pre_order_points' => 'nullable|numeric',
@@ -90,7 +90,7 @@ class ProductController extends Controller
         }
 
         $product->update([
-            'subcategory_id' => $request->subcategory_id,
+            'category_id' => $request->category_id,
             'name' => $request->name,
             'price_per_kg' => $request->price_per_kg,
             'regular_points' => $request->regular_points,
@@ -123,14 +123,14 @@ class ProductController extends Controller
 
         $request->validate([
             'name' => 'required|unique:products,name',
-            'subcategory_id' => 'required|exists:subcategories,id',
+            'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
             'pre_order_points' => 'nullable|numeric',
         ]);
 
         $product->update([
-            'subcategory_id' => $request->subcategory_id,
+            'category_id' => $request->category_id,
             'name' => $request->name,
             'price_per_kg' => $request->price_per_kg,
             'regular_points' => $request->regular_points,
@@ -149,10 +149,10 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
-    /** Get products on selected sub category */
-    public function getProductsBySubcategory($subcategory_id)
+    /** Get products on selected category */
+    public function getProductsByCategory($category_id)
     {
-        $products = Product::where('subcategory_id', $subcategory_id)->paginate(10);
+        $products = Product::where('category_id', $category_id)->paginate(10);
         return response()->json($products);
     }
 }

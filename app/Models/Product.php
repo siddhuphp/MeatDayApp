@@ -14,7 +14,7 @@ class Product extends Model
     public $incrementing = false;
     protected $fillable = [
         'id',
-        'subcategory_id',
+        'category_id',
         'name',
         'price_per_kg',
         'regular_points',
@@ -31,15 +31,9 @@ class Product extends Model
         });
     }
 
-    // Relationship: A product belongs to a subcategory
-    public function subcategory()
+    // Relationship: A product belongs to a category
+    public function category()
     {
-        return $this->belongsTo(Subcategory::class);
-    }
-
-    // Relationship: A subcategory has many products
-    public function products()
-    {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Category::class);
     }
 }
