@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('customer_id');
+            $table->uuid('user_id'); // Changed from customer_id to user_id
             $table->string('bill_no')->unique();
-            $table->decimal('total_amount', 8, 2);
-            $table->enum('reward_type', ['Active', 'Inactive']);
-            $table->integer('points_earned')->default(0);
+            $table->decimal('subtotal', 10, 2); // Total before discount
+            $table->decimal('total_discount', 10, 2)->default(0); // Total discount applied
+            $table->decimal('total_amount', 10, 2); // Final amount after discount
+            $table->enum('order_type', ['immediate', 'pre_order'])->default('immediate');
+            $table->date('delivery_date')->nullable(); // For pre-orders
+            $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'])->default('pending');
+            $table->integer('total_regular_points')->default(0); // Total regular points earned
+            $table->integer('total_pre_order_points')->default(0); // Total pre-order points earned
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
         });
     }
 

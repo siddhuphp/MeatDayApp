@@ -11,23 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_items', function (Blueprint $table) {
+        Schema::create('cart', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('transaction_id');
+            $table->uuid('user_id'); // Using user_id instead of customer_id for consistency
             $table->uuid('product_id');
             $table->decimal('quantity', 8, 3); // Supports fractional kg (e.g., 0.500 for 500g)
-            $table->decimal('unit_price', 10, 2); // Price per kg
+            $table->decimal('unit_price', 10, 2); // Price per kg from product
             $table->decimal('discount_percentage', 5, 2)->default(0); // Product discount percentage
             $table->decimal('discount_amount', 10, 2)->default(0); // Calculated discount amount
             $table->decimal('final_price', 10, 2); // Price after discount
             $table->decimal('total_price', 10, 2); // Quantity * final_price
-            $table->integer('regular_points')->default(0); // Points earned for this item
-            $table->integer('pre_order_points')->default(0); // Pre-order points earned
+            $table->integer('regular_points')->default(0); // Points for immediate purchase
+            $table->integer('pre_order_points')->default(0); // Points for pre-order
             $table->enum('order_type', ['immediate', 'pre_order'])->default('immediate');
+            $table->date('pre_order_date')->nullable(); // Future delivery date for pre-orders
             $table->timestamps();
-        
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            
+            // Ensure unique combination of user, product, and order type
+            $table->unique(['user_id', 'product_id', 'order_type', 'pre_order_date'], 'cart_unique_item');
         });
     }
 
@@ -36,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_items');
+        Schema::dropIfExists('cart');
     }
 };

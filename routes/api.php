@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\UsersController;
@@ -42,6 +43,14 @@ Route::get('products', [ProductController::class, 'listProducts']);
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    // 🛒 Cart Management
+    Route::post('cart/add', [CartController::class, 'addToCart']);
+    Route::put('cart/update/{cartItemId}', [CartController::class, 'updateCartItem']);
+    Route::delete('cart/remove/{cartItemId}', [CartController::class, 'removeFromCart']);
+    Route::get('cart', [CartController::class, 'viewCart']);
+    Route::delete('cart/clear', [CartController::class, 'clearCart']);
+    Route::get('cart/item/{cartItemId}', [CartController::class, 'getCartItem']);
 
     // 🛒 Customer Purchase & Billing
     Route::post('create-bill', [TransactionController::class, 'createBill']);
