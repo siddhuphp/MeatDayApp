@@ -45,7 +45,7 @@ class ProductController extends Controller
 
         $imagePath = $request->file('product_image')->store('product_images', 'public');
 
-        Product::create([
+        $product = Product::create([
             'id' => Str::uuid(),
             'category_id' => $request->category_id,
             'name' => $request->name,
@@ -56,7 +56,10 @@ class ProductController extends Controller
             'product_image' => $imagePath,
         ]);
 
-        return response()->json(['message' => 'Product added successfully']);
+        return response()->json([
+            'message' => 'Product added successfully',
+            'product' => $product
+        ]);
     }
 
     public function updateProduct(Request $request, $id)
@@ -112,20 +115,23 @@ class ProductController extends Controller
             'product_image' => $imagePath,
         ]);
 
-        return response()->json(['message' => 'Product updated successfully']);
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'product' => $product->fresh()
+        ]);
     }
 
     /** View product */
     public function viewProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
         return response()->json($product);
     }
 
     /** List Products */
     public function listProducts(Request $request)
     {
-        $products = Product::paginate($request->get('per_page', 10));
+        $products = Product::with('category')->paginate($request->get('per_page', 10));
         return response()->json($products);
     }
 
@@ -155,7 +161,10 @@ class ProductController extends Controller
             'pre_order_points' => $request->pre_order_points,
         ]);
 
-        return response()->json(['message' => 'Product updated successfully']);
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'product' => $product->fresh()
+        ]);
     }
 
     /** Delete Product */
@@ -167,6 +176,12 @@ class ProductController extends Controller
         }
 
         $product = Product::findOrFail($id);
+        
+        // Delete the product image if it exists
+        if ($product->product_image && Storage::disk('public')->exists($product->product_image)) {
+            Storage::disk('public')->delete($product->product_image);
+        }
+        
         $product->delete();
 
         return response()->json(['message' => 'Product deleted successfully']);
@@ -175,7 +190,7 @@ class ProductController extends Controller
     /** Get products on selected category */
     public function getProductsByCategory($category_id)
     {
-        $products = Product::where('category_id', $category_id)->paginate(10);
+        $products = Product::with('category')->where('category_id', $category_id)->paginate(10);
         return response()->json($products);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -23,6 +24,8 @@ class Product extends Model
         'product_image'
     ];
 
+    protected $appends = ['image_url'];
+
     protected static function boot()
     {
         parent::boot();
@@ -35,5 +38,30 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the full URL for the product image
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->product_image && Storage::disk('public')->exists($this->product_image)) {
+            return Storage::disk('public')->url($this->product_image);
+        }
+        
+        // Return default image URL
+        return asset('images/MeatDay_shop_image.jpg');
+    }
+
+    /**
+     * Get the full URL for the product image (alternative method)
+     *
+     * @return string
+     */
+    public function getProductImageUrlAttribute()
+    {
+        return $this->image_url;
     }
 }
