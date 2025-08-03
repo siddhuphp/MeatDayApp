@@ -117,7 +117,7 @@ class ProductController extends Controller
     }
 
     /**update product */
-    public function updateProduct(Request $request, $id)
+    public function updateProduct2(Request $request, $id)
     {
         $product = Product::findOrFail($id);
 

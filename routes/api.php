@@ -9,6 +9,7 @@ use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RewardController;
+use App\Http\Controllers\UsersController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,8 +22,13 @@ Route::get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-Route::post('send-otp', [AuthController::class, 'sendOtp']);
-Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
+# Public routes
+Route::post('register', [AuthController::class, "register"]);
+Route::post('login', [AuthController::class, "login"]);
+Route::post('googleLogin', [AuthController::class, "googleLogin"]);
+Route::get('verify', [UsersController::class, "verify"])->name('verify');
+Route::post('reset-password', [UsersController::class, 'resetPassword']);
+Route::post('set-password/{code}', [UsersController::class, 'setNewPassword']);
 
 Route::post('admin/register', [AdminAuthController::class, 'registerAdmin']); // One-time use
 Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
