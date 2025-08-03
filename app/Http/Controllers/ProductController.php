@@ -6,12 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\HttpResponses;
 
 class ProductController extends Controller
 {
+    use HttpResponses;
+
     /** Add Product */
     public function addProduct(Request $request)
     {
+        // Check if user has permission to add products
+        if (!$request->user()->canManageProducts()) {
+            return $this->error(['message' => 'Unauthorized access. Admin or Content Creator role required.'], 'Unauthorized', 403);
+        }
+
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
@@ -53,6 +61,11 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request, $id)
     {
+        // Check if user has permission to update products
+        if (!$request->user()->canManageProducts()) {
+            return $this->error(['message' => 'Unauthorized access. Admin or Content Creator role required.'], 'Unauthorized', 403);
+        }
+
         $product = Product::findOrFail($id);
 
         $request->validate([
@@ -119,6 +132,11 @@ class ProductController extends Controller
     /**update product */
     public function updateProduct2(Request $request, $id)
     {
+        // Check if user has permission to update products
+        if (!$request->user()->canManageProducts()) {
+            return $this->error(['message' => 'Unauthorized access. Admin or Content Creator role required.'], 'Unauthorized', 403);
+        }
+
         $product = Product::findOrFail($id);
 
         $request->validate([
@@ -141,8 +159,13 @@ class ProductController extends Controller
     }
 
     /** Delete Product */
-    public function deleteProduct($id)
+    public function deleteProduct(Request $request, $id)
     {
+        // Check if user has permission to delete products (only admin)
+        if (!$request->user()->canDeleteProducts()) {
+            return $this->error(['message' => 'Unauthorized access. Admin role required to delete products.'], 'Unauthorized', 403);
+        }
+
         $product = Product::findOrFail($id);
         $product->delete();
 

@@ -42,9 +42,70 @@ class AuthController extends Controller
         $this->regstrMail($request->email, $user->user_id, ucfirst($request->first_name));
 
         return $this->success([
-            'user' => $user,
+            'user' => [
+                'user_id' => $user->user_id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone_no' => $user->phone_no,
+                'user_type' => $user->user_type,
+                'role' => $user->getRoleName(),
+                'fixed_role' => $user->getFixedRole(),
+                'is_admin' => $user->isAdmin(),
+                'is_content_creator' => $user->isContentCreator(),
+                'is_manager' => $user->isManager(),
+                'is_tester' => $user->isTester(),
+                'is_user' => $user->isUser(),
+            ],
             'token' => $token,
         ], 'User registered successfully!', 201);
+    }
+
+    public function registerAdmin(Request $request) {
+        // Only existing admins can register new admins
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            return $this->error(['message' => 'Unauthorized access. Admin role required to register new admins.'], 'Unauthorized', 403);
+        }
+
+        $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'password' => 'required|min:6',
+            'role_id' => 'required|exists:roles,role_id'
+        ]);
+
+        $admin = User::create([
+            'first_name' => ucfirst($request->first_name),
+            'last_name' => ucfirst($request->last_name),
+            'email' => $request->email,
+            'phone_no' => $request->phone_no ?? null,
+            'password' => bcrypt($request->password),
+            'user_type' => 'admin',
+            'role_id' => $request->role_id,
+            'email_verified_at' => now() // Auto verify admin accounts
+        ]);
+
+        $token = $admin->createToken('adminToken')->plainTextToken;
+
+        return $this->success([
+            'user' => [
+                'user_id' => $admin->user_id,
+                'first_name' => $admin->first_name,
+                'last_name' => $admin->last_name,
+                'email' => $admin->email,
+                'phone_no' => $admin->phone_no,
+                'user_type' => $admin->user_type,
+                'role' => $admin->getRoleName(),
+                'fixed_role' => $admin->getFixedRole(),
+                'is_admin' => $admin->isAdmin(),
+                'is_content_creator' => $admin->isContentCreator(),
+                'is_manager' => $admin->isManager(),
+                'is_tester' => $admin->isTester(),
+                'is_user' => $admin->isUser(),
+            ],
+            'token' => $token
+        ], 'Admin registered successfully', 201);
     }
 
     public function googleLogin(Request $request)
@@ -85,7 +146,21 @@ class AuthController extends Controller
         $token = $user->createToken('myapptoken')->plainTextToken;
 
         return $this->success([
-            'user' => $user,
+            'user' => [
+                'user_id' => $user->user_id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone_no' => $user->phone_no,
+                'user_type' => $user->user_type,
+                'role' => $user->getRoleName(),
+                'fixed_role' => $user->getFixedRole(),
+                'is_admin' => $user->isAdmin(),
+                'is_content_creator' => $user->isContentCreator(),
+                'is_manager' => $user->isManager(),
+                'is_tester' => $user->isTester(),
+                'is_user' => $user->isUser(),
+            ],
             'token' => $token
         ], '', 200);
     }
@@ -125,7 +200,21 @@ class AuthController extends Controller
         $token = $user->createToken('myapptoken')->plainTextToken;
 
         return $this->success([
-            'user' => $user,
+            'user' => [
+                'user_id' => $user->user_id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone_no' => $user->phone_no,
+                'user_type' => $user->user_type,
+                'role' => $user->getRoleName(),
+                'fixed_role' => $user->getFixedRole(),
+                'is_admin' => $user->isAdmin(),
+                'is_content_creator' => $user->isContentCreator(),
+                'is_manager' => $user->isManager(),
+                'is_tester' => $user->isTester(),
+                'is_user' => $user->isUser(),
+            ],
             'token' => $token
         ], '', 200);
     }

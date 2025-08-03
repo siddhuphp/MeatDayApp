@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
@@ -28,9 +27,6 @@ Route::post('googleLogin', [AuthController::class, "googleLogin"]);
 Route::get('verify', [UsersController::class, "verify"])->name('verify');
 Route::post('reset-password', [UsersController::class, 'resetPassword']);
 Route::post('set-password/{code}', [UsersController::class, 'setNewPassword']);
-
-Route::post('admin/register', [AdminAuthController::class, 'registerAdmin']); // One-time use
-Route::post('admin/login', [AdminAuthController::class, 'adminLogin']);
 
 Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::get('products/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
@@ -68,14 +64,27 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
     Route::post('category', [CategoryController::class, 'addCategory']);
     Route::put('categories/{id}/status', [CategoryController::class, 'updateCategoryStatus']);
 
-    // 📦 Manage Products
-    Route::post('product', [ProductController::class, 'addProduct']);
-    Route::put('products/{id}', [ProductController::class, 'updateProduct']);
-    Route::delete('products/{id}', [ProductController::class, 'deleteProduct']);
-    
+    // 👥 Admin Management
+    Route::post('register-admin', [AuthController::class, 'registerAdmin']);
 
     // 📋 View All Transactions
     Route::get('transactions', [TransactionController::class, 'getAllTransactions']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Product Management Routes (Require Authentication & Product Management Access)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')->group(function () {
+    // 📦 Manage Products (Admin and Content Creator)
+    Route::post('product', [ProductController::class, 'addProduct']);
+    Route::put('products/{id}', [ProductController::class, 'updateProduct']);
+    Route::put('products/{id}/update2', [ProductController::class, 'updateProduct2']);
+    
+    // Delete products (Admin only)
+    Route::delete('products/{id}', [ProductController::class, 'deleteProduct']);
 });
 
 
