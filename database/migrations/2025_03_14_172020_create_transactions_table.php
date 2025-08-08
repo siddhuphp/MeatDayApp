@@ -23,6 +23,15 @@ return new class extends Migration
             $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'])->default('pending');
             $table->integer('total_regular_points')->default(0); // Total regular points earned
             $table->integer('total_pre_order_points')->default(0); // Total pre-order points earned
+            
+            // Payment related fields
+            $table->string('payment_method')->default('payu'); // payu, cod, etc.
+            $table->enum('payment_status', ['pending', 'success', 'failed', 'cancelled'])->default('pending');
+            $table->string('payu_txnid')->nullable(); // PayU transaction ID
+            $table->string('payu_hash')->nullable(); // PayU hash for verification
+            $table->json('payment_response')->nullable(); // Store PayU response
+            $table->timestamp('payment_date')->nullable(); // When payment was completed
+            
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');

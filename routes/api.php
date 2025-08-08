@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -59,6 +60,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // 🎁 Reward Points System
     Route::get('reward-points/{customer_id}', [RewardController::class, 'getPoints']);
     Route::post('redeem-points', [RewardController::class, 'redeemPoints']);
+
+    // 🛍️ Checkout & Payment
+    Route::post('checkout', [CheckoutController::class, 'checkout']);
+    Route::post('payment/verify', [CheckoutController::class, 'verifyPayUTransaction']);
+    Route::get('transactions/{transactionId}', [CheckoutController::class, 'getTransaction']);
+    Route::get('transactions', [CheckoutController::class, 'getTransactionHistory']);
 });
 
 /*
