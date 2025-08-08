@@ -20,21 +20,7 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|numeric|min:0.001', // Minimum 1 gram
-            'order_type' => 'required|in:immediate,pre_order',
-            'pre_order_date' => 'nullable|date|after:tomorrow', // Must be at least 2 days from now
         ]);
-
-        // Validate pre-order date for pre-orders
-        if ($request->order_type === 'pre_order') {
-            if (!$request->pre_order_date) {
-                return $this->error(['message' => 'Pre-order date is required for pre-orders'], 'Validation Error', 422);
-            }
-            
-            $minDate = Carbon::tomorrow()->addDay(); // 2 days from now
-            if (Carbon::parse($request->pre_order_date)->lt($minDate)) {
-                return $this->error(['message' => 'Pre-order date must be at least 2 days from today'], 'Validation Error', 422);
-            }
-        }
 
         $userId = $request->user()->user_id;
         $product = Product::findOrFail($request->product_id);
@@ -42,8 +28,6 @@ class CartController extends Controller
         // Check if item already exists in cart
         $existingCartItem = Cart::where('user_id', $userId)
             ->where('product_id', $request->product_id)
-            ->where('order_type', $request->order_type)
-            ->where('pre_order_date', $request->pre_order_date)
             ->first();
 
         if ($existingCartItem) {
@@ -63,8 +47,6 @@ class CartController extends Controller
             'user_id' => $userId,
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
-            'order_type' => $request->order_type,
-            'pre_order_date' => $request->pre_order_date,
         ]);
 
         $cartItem->calculateItem();

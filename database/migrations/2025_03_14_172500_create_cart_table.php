@@ -23,15 +23,13 @@ return new class extends Migration
             $table->decimal('total_price', 10, 2); // Quantity * final_price
             $table->integer('regular_points')->default(0); // Points for immediate purchase
             $table->integer('pre_order_points')->default(0); // Points for pre-order
-            $table->enum('order_type', ['immediate', 'pre_order'])->default('immediate');
-            $table->date('pre_order_date')->nullable(); // Future delivery date for pre-orders
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             
-            // Ensure unique combination of user, product, and order type
-            $table->unique(['user_id', 'product_id', 'order_type', 'pre_order_date'], 'cart_unique_item');
+            // Ensure unique combination of user and product
+            $table->unique(['user_id', 'product_id'], 'cart_unique_item');
         });
     }
 

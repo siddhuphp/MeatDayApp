@@ -26,13 +26,10 @@ class Cart extends Model
         'final_price',
         'total_price',
         'regular_points',
-        'pre_order_points',
-        'order_type',
-        'pre_order_date'
+        'pre_order_points'
     ];
 
     protected $casts = [
-        'pre_order_date' => 'date',
         'quantity' => 'decimal:3',
         'unit_price' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
@@ -62,7 +59,7 @@ class Cart extends Model
     }
 
     /**
-     * Calculate cart item prices and points
+     * Calculate cart item prices
      */
     public function calculateItem()
     {
@@ -83,14 +80,9 @@ class Cart extends Model
         // Calculate total price
         $this->total_price = $this->final_price * $this->quantity;
         
-        // Set points based on order type
-        if ($this->order_type === 'immediate') {
-            $this->regular_points = $product->regular_points * $this->quantity;
-            $this->pre_order_points = 0;
-        } else {
-            $this->regular_points = 0;
-            $this->pre_order_points = $product->pre_order_points * $this->quantity;
-        }
+        // Points will be calculated at checkout based on order type
+        $this->regular_points = 0;
+        $this->pre_order_points = 0;
         
         return $this;
     }
@@ -110,8 +102,6 @@ class Cart extends Model
             'total_discount' => $cartItems->sum('discount_amount'),
             'total_regular_points' => $cartItems->sum('regular_points'),
             'total_pre_order_points' => $cartItems->sum('pre_order_points'),
-            'immediate_items' => $cartItems->where('order_type', 'immediate'),
-            'pre_order_items' => $cartItems->where('order_type', 'pre_order'),
         ];
         
         return $summary;
