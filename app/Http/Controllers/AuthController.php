@@ -239,8 +239,14 @@ class AuthController extends Controller
 
         $viewName = 'emails.register';
 
-        Mail::to($email)
-            ->bcc([config('constants.BCC')]) // Add BCC recipients
-            ->send(new TestEmail($data, $viewName));
+        $mail = Mail::to($email);
+        
+        // Only add BCC if the constant is defined and not null
+        $bccRecipients = config('constants.BCC');
+        if ($bccRecipients) {
+            $mail->bcc([$bccRecipients]);
+        }
+        
+        $mail->send(new TestEmail($data, $viewName));
     }
 }
