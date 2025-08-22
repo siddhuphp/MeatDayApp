@@ -29,6 +29,6 @@ return [
         'verify_url' => 'https://info.payu.in/merchant/postservice.php?form=2',
     ],
     
-    'success_url' => env('PAYU_SUCCESS_URL', 'https://yourdomain.com/payment/success'),
-    'failure_url' => env('PAYU_FAILURE_URL', 'https://yourdomain.com/payment/failure'),
+    'success_url' => env('PAYU_SUCCESS_URL', 'https://demo.meatday.shop/payment-success'),
+    'failure_url' => env('PAYU_FAILURE_URL', 'https://demo.meatday.shop/payment-failure'),
 ];
