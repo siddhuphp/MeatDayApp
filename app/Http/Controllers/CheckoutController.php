@@ -133,15 +133,15 @@ class CheckoutController extends Controller
         $surl = config('payu.success_url');
         $furl = config('payu.failure_url');
 
-        // Generate hash
+        // Generate hash using the working format from another project
         $hash = strtolower(hash('sha512', 
-            config('payu.' . config('payu.mode') . '.key') . '|' . 
+            config('payu.key') . '|' . 
             $payuTxnId . '|' . 
             $amount . '|' . 
             $productinfo . '|' . 
             $firstname . '|' . 
             $email . '|||||||||||' . 
-            config('payu.' . config('payu.mode') . '.salt')
+            config('payu.salt')
         ));
 
         $paymentData = [
@@ -154,8 +154,8 @@ class CheckoutController extends Controller
             'surl' => $surl . "?txnid=" . $payuTxnId,
             'furl' => $furl . "?txnid=" . $payuTxnId,
             'hash' => $hash,
-            'key' => config('payu.' . config('payu.mode') . '.key'),
-            'action' => config('payu.' . config('payu.mode') . '.action'),
+            'key' => config('payu.key'),
+            'action' => config('payu.mode') == 'live' ? 'https://secure.payu.in/_payment' : 'https://test.payu.in/_payment',
         ];
 
         // Update transaction with PayU details
@@ -183,14 +183,14 @@ class CheckoutController extends Controller
 
         $response = Http::asForm()->withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded',
-        ])->post(config('payu.' . config('payu.mode') . '.verify_url'), [
-            'key' => config('payu.' . config('payu.mode') . '.key'),
+        ])->post(config('payu.mode') == 'live' ? 'https://info.payu.in/merchant/postservice.php?form=2' : 'https://test.payu.in/merchant/postservice.php?form=2', [
+            'key' => config('payu.key'),
             'command' => 'verify_payment',
             'var1' => $request->txnid,
             'hash' => strtolower(hash('sha512', 
-                config('payu.' . config('payu.mode') . '.key') . '|verify_payment|' . 
+                config('payu.key') . '|verify_payment|' . 
                 $request->txnid . '|' . 
-                config('payu.' . config('payu.mode') . '.salt')
+                config('payu.salt')
             )),
         ]);
 

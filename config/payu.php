@@ -12,19 +12,20 @@ return [
 
     'mode' => env('PAYU_MODE', 'test'), // test or live
     
-    'key' => env('PAYU_KEY', ''),
-    'salt' => env('PAYU_SALT', ''),
+    // Direct key and salt for compatibility with working code
+    'key' => env('PAYU_TEST_KEY', 'lDlmt9'),
+    'salt' => env('PAYU_TEST_SALT', 'p4ettZoLXFrXOibTqcSpoPVHouZiCiwP'),
     
     'test' => [
-        'key' => env('PAYU_TEST_KEY', 'gtKFFx'),
-        'salt' => env('PAYU_TEST_SALT', 'eCwWELxi'),
+        'key' => env('PAYU_TEST_KEY', 'lDlmt9'),
+        'salt' => env('PAYU_TEST_SALT', 'p4ettZoLXFrXOibTqcSpoPVHouZiCiwP'),
         'action' => 'https://test.payu.in/_payment',
         'verify_url' => 'https://test.payu.in/merchant/postservice.php?form=2',
     ],
     
     'live' => [
-        'key' => env('PAYU_LIVE_KEY', ''),
-        'salt' => env('PAYU_LIVE_SALT', ''),
+        'key' => env('PAYU_LIVE_KEY', 'lDlmt9'),
+        'salt' => env('PAYU_LIVE_SALT', 'p4ettZoLXFrXOibTqcSpoPVHouZiCiwP'),
         'action' => 'https://secure.payu.in/_payment',
         'verify_url' => 'https://info.payu.in/merchant/postservice.php?form=2',
     ],
