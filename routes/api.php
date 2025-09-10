@@ -10,6 +10,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\TestMailController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,6 +30,9 @@ Route::post('googleLogin', [AuthController::class, "googleLogin"]);
 Route::get('verify', [UsersController::class, "verify"])->name('verify');
 Route::post('reset-password', [UsersController::class, 'resetPassword']);
 Route::post('set-password/{code}', [UsersController::class, 'setNewPassword']);
+
+# Test email endpoint (for development/testing purposes)
+Route::post('test-mail', [TestMailController::class, 'testMail']);
 
 Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::get('products/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
@@ -98,7 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('product', [ProductController::class, 'addProduct']);
     Route::put('products/{id}', [ProductController::class, 'updateProduct']);
     Route::put('products/{id}/update2', [ProductController::class, 'updateProduct2']);
-    
+
     // Delete products (Admin only)
     Route::delete('products/{id}', [ProductController::class, 'deleteProduct']);
 });

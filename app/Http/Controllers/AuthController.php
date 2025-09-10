@@ -61,7 +61,8 @@ class AuthController extends Controller
         ], 'User registered successfully!', 201);
     }
 
-    public function registerAdmin(Request $request) {
+    public function registerAdmin(Request $request)
+    {
         // Only existing admins can register new admins
         if (!$request->user() || !$request->user()->isAdmin()) {
             return $this->error(['message' => 'Unauthorized access. Admin role required to register new admins.'], 'Unauthorized', 403);
@@ -240,13 +241,13 @@ class AuthController extends Controller
         $viewName = 'emails.register';
 
         $mail = Mail::to($email);
-        
+
         // Only add BCC if the constant is defined and not null
         $bccRecipients = config('constants.BCC');
         if ($bccRecipients) {
             $mail->bcc([$bccRecipients]);
         }
-        
+
         $mail->send(new TestEmail($data, $viewName));
     }
 }
