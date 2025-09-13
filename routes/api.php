@@ -90,6 +90,9 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
 
     // 📋 View All Transactions
     Route::get('transactions', [TransactionController::class, 'getAllTransactions']);
+
+    // 📋 Admin Orders Management
+    Route::get('admin/orders', [TransactionController::class, 'getAllOrders']);
 });
 
 /*
