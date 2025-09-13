@@ -176,12 +176,12 @@ class ProductController extends Controller
         }
 
         $product = Product::findOrFail($id);
-        
+
         // Delete the product image if it exists
         if ($product->product_image && Storage::disk('public')->exists($product->product_image)) {
             Storage::disk('public')->delete($product->product_image);
         }
-        
+
         $product->delete();
 
         return response()->json(['message' => 'Product deleted successfully']);
@@ -192,5 +192,49 @@ class ProductController extends Controller
     {
         $products = Product::with('category')->where('category_id', $category_id)->paginate(10);
         return response()->json($products);
+    }
+
+    /** Get all products grouped by active categories for home page */
+    public function getProductsForHomePage()
+    {
+        // Get all active categories with their products
+        $categoriesWithProducts = \App\Models\Category::with(['products' => function ($query) {
+            $query->orderBy('created_at', 'desc'); // Latest products first
+        }])
+            ->where('status', 'active')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // Transform the data to include category info and product count
+        $result = $categoriesWithProducts->map(function ($category) {
+            return [
+                'category' => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'description' => $category->description,
+                    'status' => $category->status,
+                    'product_count' => $category->products->count()
+                ],
+                'products' => $category->products->map(function ($product) {
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'price_per_kg' => $product->price_per_kg,
+                        'regular_points' => $product->regular_points,
+                        'pre_order_points' => $product->pre_order_points,
+                        'product_discount' => $product->product_discount,
+                        'product_image' => $product->product_image ? asset('storage/' . $product->product_image) : null,
+                        'created_at' => $product->created_at,
+                        'updated_at' => $product->updated_at
+                    ];
+                })
+            ];
+        });
+
+        return $this->success([
+            'categories_with_products' => $result,
+            'total_categories' => $result->count(),
+            'total_products' => $result->sum('category.product_count')
+        ], 'Products retrieved successfully for home page', 200);
     }
 }

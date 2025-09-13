@@ -39,6 +39,7 @@ Route::get('products/category/{category_id}', [ProductController::class, 'getPro
 
 Route::get('products/{id}', [ProductController::class, 'viewProduct']);
 Route::get('products', [ProductController::class, 'listProducts']);
+Route::get('products/home', [ProductController::class, 'getProductsForHomePage']);
 
 
 

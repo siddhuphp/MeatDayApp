@@ -159,7 +159,7 @@ class UsersController extends Controller
                                 document.getElementById('countdown').innerText = countdown;
                                 countdown--;
                                 if (countdown < 0) {
-                                    window.location.href = 'https://press-club.itprior.com/login';
+                                    window.location.href = 'https://demo.meatday.shop/';
                                 } else {
                                     setTimeout(updateCountdown, 1000);
                                 }
@@ -196,7 +196,7 @@ class UsersController extends Controller
                             document.getElementById('countdown').innerText = countdown;
                             countdown--;
                             if (countdown < 0) {
-                                window.location.href = 'https://press-club.itprior.com/login';
+                                window.location.href = 'https://demo.meatday.shop/';
                             } else {
                                 setTimeout(updateCountdown, 1000);
                             }
@@ -219,19 +219,19 @@ class UsersController extends Controller
         $data = [
             'subject' => 'Registration Successful!',
             'username' => $username,
-            'loginLink' => 'https://press-club.itprior.com/login'
+            'loginLink' => 'https://demo.meatday.shop/'
         ];
 
         $viewName = 'emails.email_register_success';
 
         $mail = Mail::to($email);
-        
+
         // Only add BCC if the constant is defined and not null
         $bccRecipients = config('constants.BCC');
         if ($bccRecipients) {
             $mail->bcc([$bccRecipients]);
         }
-        
+
         $mail->send(new TestEmail($data, $viewName));
     }
 
@@ -263,7 +263,7 @@ class UsersController extends Controller
             'created_at' => now(),
         ]);
 
-        $resetLink = 'https://press-club.itprior.com/setPassword/' . $token;
+        $resetLink = 'https://demo.meatday.shop/setPassword/' . $token;
 
         $data = [
             'subject' => 'Reset Your Password',
