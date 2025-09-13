@@ -37,9 +37,9 @@ Route::post('test-mail', [TestMailController::class, 'testMail']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::get('products/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 
+Route::get('products/home', [ProductController::class, 'getProductsForHomePage']);
 Route::get('products/{id}', [ProductController::class, 'viewProduct']);
 Route::get('products', [ProductController::class, 'listProducts']);
-Route::get('products/home', [ProductController::class, 'getProductsForHomePage']);
 
 
 
