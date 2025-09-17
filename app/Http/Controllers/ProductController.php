@@ -71,28 +71,32 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|unique:products,name,' . $id,
-            'category_id' => 'required|exists:categories,id',
-            'price_per_kg' => 'required|numeric|min:1',
-            'regular_points' => 'nullable|numeric',
-            'pre_order_points' => 'nullable|numeric',
-            'product_discount' => 'nullable|numeric|min:0|max:100',
-            'product_image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png',
-                'max:2048',
-                function ($attribute, $value, $fail) {
-                    if ($value && $value->isValid()) {
-                        [$width, $height] = getimagesize($value->getRealPath());
-                        if ($width != 800 || $height != 580) {
-                            $fail("The {$attribute} must be exactly 800x580 pixels.");
+        try {
+            $request->validate([
+                'name' => 'required|unique:products,name,' . $id,
+                'category_id' => 'required|exists:categories,id',
+                'price_per_kg' => 'required|numeric|min:1',
+                'regular_points' => 'nullable|numeric',
+                'pre_order_points' => 'nullable|numeric',
+                'product_discount' => 'nullable|numeric|min:0|max:100',
+                'product_image' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpg,jpeg,png',
+                    'max:2048',
+                    function ($attribute, $value, $fail) {
+                        if ($value && $value->isValid()) {
+                            [$width, $height] = getimagesize($value->getRealPath());
+                            if ($width != 800 || $height != 580) {
+                                $fail("The {$attribute} must be exactly 800x580 pixels.");
+                            }
                         }
                     }
-                }
-            ],
-        ]);
+                ],
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->error($e->errors(), 'Validation failed', 422);
+        }
 
         $imagePath = $product->product_image;
 
@@ -133,38 +137,6 @@ class ProductController extends Controller
     {
         $products = Product::with('category')->paginate($request->get('per_page', 10));
         return response()->json($products);
-    }
-
-    /**update product */
-    public function updateProduct2(Request $request, $id)
-    {
-        // Check if user has permission to update products
-        if (!$request->user()->canManageProducts()) {
-            return $this->error(['message' => 'Unauthorized access. Admin or Content Creator role required.'], 'Unauthorized', 403);
-        }
-
-        $product = Product::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|unique:products,name,' . $id,
-            'category_id' => 'required|exists:categories,id',
-            'price_per_kg' => 'required|numeric|min:1',
-            'regular_points' => 'nullable|numeric',
-            'pre_order_points' => 'nullable|numeric',
-        ]);
-
-        $product->update([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'price_per_kg' => $request->price_per_kg,
-            'regular_points' => $request->regular_points,
-            'pre_order_points' => $request->pre_order_points,
-        ]);
-
-        return response()->json([
-            'message' => 'Product updated successfully',
-            'product' => $product->fresh()
-        ]);
     }
 
     /** Delete Product */

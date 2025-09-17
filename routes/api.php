@@ -104,9 +104,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // 📦 Manage Products (Admin and Content Creator)
     Route::post('product', [ProductController::class, 'addProduct']);
-    Route::post('products/{id}', [ProductController::class, 'updateProduct']);
-    Route::put('products/{id}/update2', [ProductController::class, 'updateProduct2']);
-
+    Route::put('products/{id}', [ProductController::class, 'updateProduct']);
     // Delete products (Admin only)
     Route::delete('products/{id}', [ProductController::class, 'deleteProduct']);
 });
