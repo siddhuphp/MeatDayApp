@@ -195,7 +195,7 @@ class ProductController extends Controller
                         'regular_points' => $product->regular_points,
                         'pre_order_points' => $product->pre_order_points,
                         'product_discount' => $product->product_discount,
-                        'product_image' => $product->product_image ? asset('storage/' . $product->product_image) : null,
+                        'product_image' => $product->product_image ? url('storage/' . $product->product_image) : null,
                         'created_at' => $product->created_at,
                         'updated_at' => $product->updated_at
                     ];
