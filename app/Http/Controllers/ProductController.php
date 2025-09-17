@@ -27,6 +27,7 @@ class ProductController extends Controller
             'regular_points' => 'nullable|numeric',
             'pre_order_points' => 'nullable|numeric',
             'product_discount' => 'nullable|numeric|min:0|max:100',
+            'status' => 'nullable|in:active,inactive',
             'product_image' => [
                 'required',
                 'image',
@@ -54,6 +55,7 @@ class ProductController extends Controller
             'pre_order_points' => $request->pre_order_points,
             'product_discount' => $request->product_discount ?? 0,
             'product_image' => $imagePath,
+            'status' => $request->status ?? 'active',
         ]);
 
         return response()->json([
@@ -79,6 +81,7 @@ class ProductController extends Controller
                 'regular_points' => 'nullable|numeric',
                 'pre_order_points' => 'nullable|numeric',
                 'product_discount' => 'nullable|numeric|min:0|max:100',
+                'status' => 'nullable|in:active,inactive',
                 'product_image' => [
                     'nullable',
                     'image',
@@ -117,6 +120,7 @@ class ProductController extends Controller
             'pre_order_points' => $request->pre_order_points,
             'product_discount' => $request->product_discount ?? 0,
             'product_image' => $imagePath,
+            'status' => $request->status ?? $product->status,
         ]);
 
         return response()->json([
@@ -137,6 +141,27 @@ class ProductController extends Controller
     {
         $products = Product::with('category')->paginate($request->get('per_page', 10));
         return response()->json($products);
+    }
+
+    /** Update Product Status */
+    public function updateProductStatus(Request $request, $id)
+    {
+        // Check if user has permission to update products
+        if (!$request->user()->canManageProducts()) {
+            return $this->error(['message' => 'Unauthorized access. Admin or Content Creator role required.'], 'Unauthorized', 403);
+        }
+
+        $request->validate([
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->update(['status' => $request->status]);
+
+        return response()->json([
+            'message' => 'Product status updated successfully',
+            'product' => $product->fresh()
+        ]);
     }
 
     /** Delete Product */
@@ -162,16 +187,16 @@ class ProductController extends Controller
     /** Get products on selected category */
     public function getProductsByCategory($category_id)
     {
-        $products = Product::with('category')->where('category_id', $category_id)->paginate(10);
+        $products = Product::with('category')->where('category_id', $category_id)->where('status', 'active')->paginate(10);
         return response()->json($products);
     }
 
     /** Get all products grouped by active categories for home page */
     public function getProductsForHomePage()
     {
-        // Get all active categories with their products
+        // Get all active categories with their active products
         $categoriesWithProducts = \App\Models\Category::with(['products' => function ($query) {
-            $query->orderBy('created_at', 'desc'); // Latest products first
+            $query->where('status', 'active')->orderBy('created_at', 'desc'); // Latest active products first
         }])
             ->where('status', 'active')
             ->orderBy('name', 'asc')

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('pre_order_points', 10, 2)->comment('Pre-Order Reward Points')->default(0)->nullable();
             $table->decimal('product_discount', 5, 2)->default(0);
             $table->string('product_image')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');

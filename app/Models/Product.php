@@ -21,7 +21,8 @@ class Product extends Model
         'regular_points',
         'pre_order_points',
         'product_discount',
-        'product_image'
+        'product_image',
+        'status'
     ];
 
     protected $appends = ['image_url'];
@@ -63,5 +64,47 @@ class Product extends Model
     public function getProductImageUrlAttribute()
     {
         return $this->image_url;
+    }
+
+    /**
+     * Scope to get only active products
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope to get only inactive products
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactive');
+    }
+
+    /**
+     * Check if product is active
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Check if product is inactive
+     *
+     * @return bool
+     */
+    public function isInactive()
+    {
+        return $this->status === 'inactive';
     }
 }
