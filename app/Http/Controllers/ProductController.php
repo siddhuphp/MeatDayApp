@@ -21,7 +21,7 @@ class ProductController extends Controller
         }
 
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:products,name',
             'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
@@ -72,7 +72,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:products,name,' . $id,
             'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
@@ -146,7 +146,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|unique:products,name',
+            'name' => 'required|unique:products,name,' . $id,
             'category_id' => 'required|exists:categories,id',
             'price_per_kg' => 'required|numeric|min:1',
             'regular_points' => 'nullable|numeric',
